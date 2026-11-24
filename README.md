@@ -1,8 +1,15 @@
 # Screenshot Optimizer
 
-A local screenshot-management application for capturing, organizing, searching, and reviewing screenshots. It provides an Inbox workflow, customizable notebooks, OCR search, voice notes, and direct image editing.
+A local screenshot-management application for capturing, organizing, searching, and reviewing screenshots. It provides an Inbox workflow, customizable notebooks, OCR search, voice notes, and direct screenshot download support.
 
-> Repository: https://github.com/ritesh10176-wq/Screenshot-optimizer
+> **Repository:** [ritesh10176-wq/Screenshot-optimizer](https://github.com/ritesh10176-wq/Screenshot-optimizer)
+
+## Direct Downloads
+
+- [Download the latest source ZIP](https://github.com/ritesh10176-wq/Screenshot-optimizer/archive/refs/heads/main.zip)
+- [Download `requirements.txt`](https://raw.githubusercontent.com/ritesh10176-wq/Screenshot-optimizer/main/requirements.txt)
+- [Browse the latest source code](https://github.com/ritesh10176-wq/Screenshot-optimizer/tree/main)
+- [View or download releases](https://github.com/ritesh10176-wq/Screenshot-optimizer/releases)
 
 ## Current Features
 
@@ -16,12 +23,13 @@ A local screenshot-management application for capturing, organizing, searching, 
 - Allows text notes and voice memos to be attached to screenshots.
 - Supports pasted images and manually edited, cropped, or rotated images.
 - Provides live updates to the interface through WebSockets.
-- Includes a global Windows shortcut: `Ctrl + Shift + X`
+- Includes a global Windows shortcut: `Ctrl + Shift + X`.
 
 ## Technology
 
 - **Language:** Python
 - **Web framework:** FastAPI
+- **Server:** Uvicorn
 - **File monitoring:** Watchdog
 - **OCR:** Tesseract with Pytesseract
 - **Image handling:** Pillow
@@ -38,19 +46,15 @@ git clone https://github.com/ritesh10176-wq/Screenshot-optimizer.git
 cd Screenshot-optimizer
 ```
 
-### Option 2: Download ZIP
+### Option 2: Download the ZIP
 
-1. Open https://github.com/ritesh10176-wq/Screenshot-optimizer.
-2. Select **Code**.
-3. Select **Download ZIP**.
-4. Extract the downloaded archive.
-5. Open a terminal inside the extracted folder.
+Use the [direct source ZIP download](https://github.com/ritesh10176-wq/Screenshot-optimizer/archive/refs/heads/main.zip), then extract the archive and open a terminal in the extracted folder.
 
 ## Run Locally
 
 ### 1. Install Python
 
-Python 3.10 or newer is recommended.
+Python 3.10 or newer is required.
 
 Verify the installation:
 
@@ -74,19 +78,22 @@ python3 -m venv .venv
 source .venv/bin/activate
 ```
 
-### 3. Install Dependencies
+### 3. Install Python Dependencies
 
-The repository does not currently include a `requirements.txt`, so install the detected dependencies manually:
+From the repository root:
 
 ```bash
-pip install fastapi uvicorn watchdog pillow pytesseract python-multipart
+python -m pip install --upgrade pip
+python -m pip install -r requirements.txt
 ```
+
+You can also [download the requirements file directly](https://raw.githubusercontent.com/ritesh10176-wq/Screenshot-optimizer/main/requirements.txt).
 
 ### 4. Install Tesseract OCR
 
-For OCR support, install Tesseract OCR:
+OCR support requires a separate Tesseract installation.
 
-- **Windows:** Install Tesseract OCR and ensure `tesseract.exe` is available.
+- **Windows:** Download and run the [latest Tesseract OCR installer](https://github.com/tesseract-ocr/tesseract/releases/latest), then ensure `tesseract.exe` is available.
 - **Linux:**
 
 ```bash
@@ -99,43 +106,42 @@ sudo apt install tesseract-ocr
 brew install tesseract
 ```
 
-The application checks for Tesseract in:
+The application checks `TESSERACT_PATH`, common Windows installation directories, and the system `PATH`.
 
-- `TESSERACT_PATH`
-- Common Windows installation directories
-- The system `PATH`
+A Windows environment variable can be set explicitly:
 
-A Windows environment variable can also be set explicitly:
-
-```bash
-set TESSERACT_PATH=C:\Program Files\Tesseract-OCR\tesseract.exe
+```powershell
+setx TESSERACT_PATH "C:\Program Files\Tesseract-OCR\tesseract.exe"
 ```
 
 ### 5. Start the Application
 
-Because the code imports modules using the `app` package, run it from the repository's parent directory:
+The source imports modules using the `app` package. Clone or extract the repository so its parent directory is the package context, then run:
 
 ```bash
+cd ..
 uvicorn app.server:app --host 127.0.0.1 --port 8000
 ```
 
-Open:
+Open [http://127.0.0.1:8000](http://127.0.0.1:8000).
 
-```text
-http://127.0.0.1:8000
+Alternatively, if you place the repository directory in a location that is already importable as `app`, use:
+
+```bash
+uvicorn app.server:app --host 127.0.0.1 --port 8000
 ```
 
 ## Configuration
 
 ### Screenshot Watch Folder
 
-Set a custom screenshot folder:
+Set a custom screenshot folder on Windows:
 
-```bash
-set SCREENSHOT_WATCH_DIR=C:\Users\YourName\Pictures\Screenshots
+```powershell
+setx SCREENSHOT_WATCH_DIR "C:\Users\YourName\Pictures\Screenshots"
 ```
 
-The application also attempts to detect standard Windows, OneDrive, Desktop, and Pictures locations.
+The application also detects standard Windows, OneDrive, Desktop, and Pictures locations.
 
 ### Server Settings
 
@@ -148,16 +154,18 @@ Port: 8000
 
 Override them with environment variables:
 
-```bash
-set SERVER_HOST=127.0.0.1
-set SERVER_PORT=8000
+```powershell
+setx SERVER_HOST "127.0.0.1"
+setx SERVER_PORT "8000"
 ```
+
+Restart the terminal and application after using `setx`.
 
 ## Project Structure
 
 ```text
 Screenshot-optimizer/
-├── .gitignore
+├── requirements.txt
 ├── __init__.py
 ├── config.py
 ├── hotkey.py
@@ -203,9 +211,8 @@ Screenshot-optimizer/
 
 ## Current Limitations
 
-- No `requirements.txt` or lock file is currently included.
 - The global shortcut is Windows-only.
 - Clipboard monitoring is best supported on Windows.
-- OCR depends on a Tesseract installation.
-- `static/` is expected by `server.py` but was not accessible in the repository listing.
+- OCR depends on an external Tesseract installation.
+- `static/` is expected by `server.py`; a missing frontend directory will prevent the application from starting.
 - The repository does not currently include a license.

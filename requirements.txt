@@ -1,0 +1,9 @@
+# Screenshot Optimizer runtime dependencies
+# Python 3.10+
+
+fastapi>=0.115,<1
+uvicorn[standard]>=0.30,<1
+watchdog>=4,<6
+Pillow>=10,<12
+pytesseract>=0.3.10,<1
+python-multipart>=0.0.9,<1
